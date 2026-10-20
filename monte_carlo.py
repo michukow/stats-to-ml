@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 rng=np.random.default_rng(42)
 x=rng.uniform(0,10,120)
-wyniki=np.zeros(1000)
+ilosc_losowan=10000
+wyniki=np.zeros(ilosc_losowan)
 def mnk(x,y):
 		X=np.column_stack((np.ones(len(y)),x))
 		Xtx=X.T@X
@@ -18,11 +19,12 @@ def mnk(x,y):
 		k=X.shape[1]-1
 		R2_adj=1-((SS_re.sum()*(n-1))/(SS_calk.sum()*(n-k-1)))
 		return b[1]
-for i in range (1000):
+for i in range (ilosc_losowan):
 	eps=rng.normal(0,2,120)
 	y=1+2*x+eps
 	wyniki[i]=mnk(x,y)
 print(f"Średnia: {wyniki.mean()}")
 print(f"Odchylenie standardowe: {wyniki.std()}")
 plt.hist(wyniki,bins=40)
+plt.title("Wykres gęstości")
 plt.show()

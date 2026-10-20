@@ -40,7 +40,7 @@ Wartości $x$ są stałe, a w każdym z 1000 powtórzeń losowany jest nowy szum
 | większy szum | 30 | 6 | 2,004 | 0,382 |
 | więcej danych | 120 | 2 | 2,001 | 0,066 |
 
-![Histogram oszacowań b1](histogram.png)
+![Histogram oszacowań b1](/histogram.png)
 
 **Wnioski:**
 - średnia oszacowań pokrywa się z prawdziwą wartością 2 we wszystkich wariantach,
