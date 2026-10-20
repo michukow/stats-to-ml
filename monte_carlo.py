@@ -11,13 +11,13 @@ def mnk(x,y):
 		b=np.linalg.inv(Xtx)@Xty
 		y_hat=X@b
 		e=y-y_hat
-		SS_calk=(y-y.mean())**2
-		SS_wyj=(y_hat-y.mean())**2
-		SS_re=(e**2)
-		R2=SS_wyj.sum()/SS_calk.sum()
+		SS_calk=((y-y.mean())**2).sum()
+		SS_wyj=((y_hat-y.mean())**2).sum()
+		SS_re=(e**2).sum()
+		R2=SS_wyj/SS_calk
 		n=len(y)
 		k=X.shape[1]-1
-		R2_adj=1-((SS_re.sum()*(n-1))/(SS_calk.sum()*(n-k-1)))
+		R2_adj=1-((SS_re*(n-1))/(SS_calk*(n-k-1)))
 		return b[1]
 for i in range (ilosc_losowan):
 	eps=rng.normal(0,2,120)
