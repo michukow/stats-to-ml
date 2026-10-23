@@ -59,6 +59,30 @@ python faza1_mnk/mnk.py
 python faza1_mnk/symulacja_mc.py
 ```
 
+## Faza 2: Zmienne losowe ciągłe
+
+Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
+
+**Całkowanie numeryczne (metoda punktu środkowego).** Błąd maleje jak $1/N^2$:
+
+| $N$ | Błąd $P(1 \le X \le 2)$ |
+|---|---|
+| 10 | $9{,}26 \cdot 10^{-5}$ |
+| 100 | $9{,}26 \cdot 10^{-7}$ |
+| 1000 | $9{,}26 \cdot 10^{-9}$ |
+
+**Mediana metodą bisekcji.** 22 iteracje dla tolerancji $10^{-6}$; wynik $2{,}3811017$ przy dokładnym $\sqrt[3]{13{,}5} = 2{,}3811016$.
+
+**Losowanie metodą odwracania dystrybuanty** ($x = 3u^{1/3}$, $n = 10\,000$):
+
+| Statystyka | Teoria | Próba |
+|---|---|---|
+| Średnia | 2,25 | 2,245 |
+| Mediana | 2,381 | 2,378 |
+| $P(X > 2)$ | 0,704 | 0,699 |
+
+![Histogram próby i gęstość](histogram_gestosc.png)
+
 ## Plan
 
 - [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, $R^2$, implementacja
