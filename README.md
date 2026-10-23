@@ -86,7 +86,7 @@ Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
 ## Plan
 
 - [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, $R^2$, implementacja
-- [ ] **Faza 2:** rachunek prawdopodobieństwa, zmienne ciągłe, metoda największej wiarygodności
+- [x] **Faza 2:** rachunek prawdopodobieństwa, zmienne ciągłe, metoda największej wiarygodności
 - [ ] **Faza 3:** twierdzenie Gaussa–Markowa i wnioskowanie w regresji
 - [ ] **Faza 4:** diagnostyka: współliniowość, heteroskedastyczność, autokorelacja
 - [ ] **Faza 5:** szeregi czasowe
