@@ -83,6 +83,23 @@ Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
 
 ![Histogram próby i gęstość](histogram_gestosc.png)
 
+## Faza 3: Własności estymatora MNK
+
+**Nieobciążoność.** Z zapisu $b_1 = \beta_1 + \sum w_i \varepsilon_i$ wynika $E[b_1] = \beta_1$, o ile $E[\varepsilon_i] = 0$.
+
+| Wariant składnika losowego | $E[b_1]$ z teorii | Średnia z Monte Carlo |
+|---|---|---|
+| $E[\varepsilon] = 0$ | 2,00 | 2,0006 |
+| $E[\varepsilon] = 0{,}5$ | 2,00 (przesunięcie trafia w $b_0$) | 2,0000 |
+| $E[\varepsilon] = 0{,}3x$ | 2,30 (obciążenie) | 2,3000 |
+
+**Błąd standardowy.** $SE(b_1) = \sigma / \sqrt{\sum (x_i - \bar x)^2}$, przy homoskedastyczności i braku autokorelacji.
+
+| Zakres $x$ | $SE$ z teorii | Odchylenie z Monte Carlo |
+|---|---|---|
+| $[0, 10]$ | 0,1255 | 0,1259 |
+| $[0;\ 2{,}5]$ | 0,5020 | 0,5038 |
+
 ## Plan
 
 - [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, $R^2$, implementacja
