@@ -50,5 +50,8 @@ print(f"Wynik II: {medianka()[1]}")
 print(f"Średnia: {x.mean():.4f}")
 print(f"P(X > 2): {(x > 2).mean():.4f}")
 wykres()
+print(f"E(X^2): {calka(lambda x: x**2*f(x),0,3,N)}")
+print(f"Wariancja z próby: {x.var()}")
+print(f"Odchylenie standardowe z próby: {x.std()}")
 
 
