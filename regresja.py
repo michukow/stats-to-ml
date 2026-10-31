@@ -58,9 +58,9 @@ print(f"t1: {ln_dochod/se1}")
 print(f"t2: {stopa/se2}\n")
 
 print(f"p-values:")
-print(f"p-value: {2*(1-stats.t.cdf(const1/se0,n-k-1))}")
-print(f"p-value: {2*(1-stats.t.cdf(ln_dochod/se1,n-k-1))}")
-print(f"p-value: {2*(1-stats.t.cdf(stopa/se2,n-k-1))}\n")
+print(f"p-value: {2*(1-stats.t.cdf(abs(const1/se0),n-k-1))}")
+print(f"p-value: {2*(1-stats.t.cdf(abs(ln_dochod/se1),n-k-1))}")
+print(f"p-value: {2*(1-stats.t.cdf(abs(stopa/se2),n-k-1))}\n")
 
 print("Summary:")
 print(f"n={n}")
