@@ -10,7 +10,7 @@ def regression(x,y):
 	Xtx=X.T@X
 	Xty=X.T@y
 	b=np.linalg.inv(Xtx)@Xty
-	return b[0],b[1],b[2]
+	return b
 
 def standard_error(x):
 	X=np.column_stack((np.ones(len(x)),x)) 
@@ -24,10 +24,23 @@ def n_k(x,y):
 	v=n-k-1
 	return n,k,v
 
+def R(x,y):
+	X=np.column_stack((np.ones(len(x)),x))
+	b=regression(x,y)
+	y_hat=X@b
+	e=y-y_hat
+	SS_calk=(y-y.mean())**2
+	SS_wyj=(y_hat-y.mean())**2
+	SS_re=(e**2)
+	R2=SS_wyj.sum()/SS_calk.sum()
+	R2_adj=1-((SS_re.sum()*(n-1))/(SS_calk.sum()*(n-k-1)))
+	return R2,R2_adj
+
 const1,ln_dochod,stopa=regression(x,y)
 n,k,v=n_k(x,y)
 se0,se1,se2=standard_error(x)
 macierz=standard_error(x)
+R2,R2_adj=R(x,y)
 
 print("Slopes:")
 print(f"b0: {round(const1,4)}")
@@ -53,4 +66,6 @@ print("Summary:")
 print(f"n={n}")
 print(f"k={k}")
 print(f"Degrees of freedom (df): {v}")
+print(f"R2: {R2}")
+print(f"R2_adjusted: {R2_adj}")
 
