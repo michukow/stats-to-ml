@@ -15,6 +15,17 @@ def regression(x,y):
 	b=np.linalg.inv(Xtx)@Xty
 	return b
 
+def standard_error(x,y):
+	X=np.column_stack((np.ones(len(x)),x)) 
+	b=regression(x,y)
+	y_hat=X@b
+	e=y-y_hat
+	SS_re=(e**2)
+	n,k,_=n_k(x,y)
+	s2=(SS_re).sum()/(n-k-1)
+	se=np.sqrt(s2*np.diag(np.linalg.inv(X.T@X)))
+	return se
+
 def errors(x,y):
 	b=regression(x,y)
 	X=np.column_stack((np.ones(len(x)),x))
@@ -44,10 +55,18 @@ def R(x,y):
 
 e=errors(x,y)
 R2,R2_adj=R(x,y)
+b0,b1,b2=regression(x,y)
+se0,se1,se2=standard_error(x,y)
+n,k,v=n_k(x,y)
+
 print(f"Korelacja: {round(np.corrcoef(e[1:],e[:-1])[0, 1],2)}")
 print(f"Statystyka DW: {round(((np.diff(e)**2).sum())/(e**2).sum(),2)}")
 print(f"R2: {round(R2,2)}")
 print(f"R2_adj: {round(R2_adj,2)}")
-plt.plot(e)
-plt.axhline(0,color="black")
-plt.show()
+t_kr=stats.t.ppf(0.975,v) #95% procentowy przedział oznacza, że pole 1-alfa to 0,95, więc alfa/2 to 0,025, więc daje to w sumie 0,975
+dolny=b1-(t_kr*se1)
+gorny=b1+(t_kr*se1)
+print(f"95% przedział ufności dla beta1: {dolny:.3f} - {gorny:.3f}")
+#plt.plot(e)
+#plt.axhline(0,color="black")
+#plt.show()

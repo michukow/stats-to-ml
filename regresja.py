@@ -72,3 +72,7 @@ print(f"k={k}")
 print(f"Degrees of freedom (df): {v}")
 print(f"R2: {R2}")
 print(f"R2_adjusted: {R2_adj}")
+t_kr=stats.t.ppf(0.975,v) #95% procentowy przedział oznacza, że pole 1-alfa to 0,95, więc alfa/2 to 0,025, więc daje to w sumie 0,975
+dolny=ln_dochod-(t_kr*se1)
+gorny=ln_dochod+(t_kr*se1)
+print(f"95% przedział ufności dla beta1: {dolny:.3f} - {gorny:.3f}")
