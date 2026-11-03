@@ -102,9 +102,26 @@ Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
 
 ## Plan
 
-- [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, $R^2$, implementacja
-- [x] **Faza 2:** rachunek prawdopodobieństwa, zmienne ciągłe, metoda największej wiarygodności
-- [ ] **Faza 3:** twierdzenie Gaussa–Markowa i wnioskowanie w regresji
-- [ ] **Faza 4:** diagnostyka: współliniowość, heteroskedastyczność, autokorelacja
-- [ ] **Faza 5:** szeregi czasowe
-- [ ] **Faza 6:** wstęp do ML: funkcje straty, gradient descent, Ridge i Lasso, walidacja krzyżowa
+- [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, R², implementacja
+- [x] **Faza 2:** zmienne ciągłe: gęstość, całkowanie numeryczne, mediana, wariancja, losowanie z rozkładu
+- [ ] **Faza 3:** wnioskowanie (prawie gotowe)
+  - [x] nieobciążoność b1, wzór na SE(b1)
+  - [x] test t i p-value, własna tabelka regresji (zgodna ze statsmodels)
+  - [x] przedziały ufności
+  - [ ] test F
+  - [ ] **Moduł A: audyt próbkowy** (w trakcie)
+    - [x] przedział ufności dla odsetka wadliwych rekordów
+    - [ ] symulacja: czy przedział trafia w 95% przypadków
+    - [ ] ile rekordów trzeba sprawdzić dla zadanej dokładności
+- [ ] **Faza 4:** diagnostyka (w trakcie)
+  - [x] autokorelacja, Durbin–Watson, model w różnicach
+  - [ ] heteroskedastyczność
+  - [ ] współliniowość (VIF)
+  - [ ] zmienne pominięte
+  - [ ] **Moduł B: audyt jakości danych.** Raport braków, duplikatów, outlierów i rozkładów kolumn (pandas, Streamlit)
+  - [ ] **Moduł C: wycena danych regresją.** Regresja hedoniczna ceny zbioru od jego cech
+- [ ] **Faza 5:** szeregi czasowe: stacjonarność, ADF, ARIMA, bootstrap reszt, prognozy Monte Carlo
+- [ ] **Moduł D: wykrywanie danych osobowych.** PESEL, NIP, e-mail, telefon; potem nazwy własne w tekście
+- [ ] **Faza 6:** wstęp do ML: funkcja straty, gradient descent, Ridge i Lasso, walidacja krzyżowa
+  - [ ] **Moduł E: wartość danych dla modelu.** Krzywe uczenia, model z danym zbiorem i bez niego
+- [ ] **Tor równoległy (opcjonalnie):** SQL, duże pliki (parquet), automatyzacja przetwarzania
