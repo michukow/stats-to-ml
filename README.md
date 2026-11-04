@@ -102,6 +102,8 @@ Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
 
 ## Plan
 
+## Plan
+
 - [x] **Faza 1:** MNK: wyprowadzenie, zapis macierzowy, R², implementacja
 - [x] **Faza 2:** zmienne ciągłe: gęstość, całkowanie numeryczne, mediana, wariancja, losowanie z rozkładu
 - [ ] **Faza 3:** wnioskowanie (prawie gotowe)
@@ -109,10 +111,10 @@ Rozkład o gęstości $f(x) = x^2/9$ na $[0, 3]$, analizowany trzema metodami.
   - [x] test t i p-value, własna tabelka regresji (zgodna ze statsmodels)
   - [x] przedziały ufności
   - [ ] test F
-  - [ ] **Moduł A: audyt próbkowy** (w trakcie)
+  - [x] **Moduł A: audyt próbkowy**
     - [x] przedział ufności dla odsetka wadliwych rekordów
-    - [ ] symulacja: czy przedział trafia w 95% przypadków
-    - [ ] ile rekordów trzeba sprawdzić dla zadanej dokładności
+    - [x] symulacja trafności: 94,5% przy n=400, tylko 77,5% przy n=50
+    - [x] kalkulator wielkości próby (np. ±0,5 pp przy 4% wad → 5901 rekordów)
 - [ ] **Faza 4:** diagnostyka (w trakcie)
   - [x] autokorelacja, Durbin–Watson, model w różnicach
   - [ ] heteroskedastyczność
