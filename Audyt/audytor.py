@@ -1,7 +1,8 @@
 import pandas as pd
 
 def braki(df):
-    return df.isna().sum()
+    a=df.isna().sum()
+    return a[a>0]
 
 def duplikaty(df):
     return df.duplicated().sum()
