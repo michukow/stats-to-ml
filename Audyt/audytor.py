@@ -37,6 +37,18 @@ def niespojny_zapis(df):
             wynik[kol]=przed-po
     return wynik
 
+def daty_z_przyszlosci(df):
+    dzis=pd.Timestamp.today()
+    wynik={}
+    for kol in df.select_dtypes(include=["object","string"]).columns:
+        daty=pd.to_datetime(df[kol],errors="coerce")
+        udane=daty.notna().mean()      
+        if udane>0.9:
+            liczba=(daty>dzis).sum()
+            if liczba>0:
+                wynik[kol]=int(liczba)
+    return wynik
+
 def raport(df):
     print(f"Wiersze: {len(df)} kolumny: {df.shape[1]}\n")
     print(f"Braki:\n {braki(df)}\n")
@@ -44,6 +56,7 @@ def raport(df):
     print(f"Ujemne: {ujemne(df)}\n")
     print(f"Outlier-y: {outliery(df)}\n")
     print(f"Niespójny zapis: {niespojny_zapis(df)}\n")
+    print("Daty z przyszłości:",daty_z_przyszlosci(df))
 
 df=pd.read_csv("dane_pola.csv")
 raport(df)
