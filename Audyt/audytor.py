@@ -58,5 +58,6 @@ def raport(df):
     print(f"Niespójny zapis: {niespojny_zapis(df)}\n")
     print("Daty z przyszłości:",daty_z_przyszlosci(df))
 
-df=pd.read_csv("dane_pola.csv")
-raport(df)
+if __name__=="__main__":
+    df=pd.read_csv(r"C:\Users\micha\Desktop\Python\Audyt\dane_pola.csv")
+    raport(df)
