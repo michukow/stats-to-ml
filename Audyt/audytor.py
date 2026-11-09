@@ -15,14 +15,14 @@ def ujemne(df):
             wynik[kol]=int(liczba)
     return wynik
 
-def outliery(df):
+def outliery(df,k):
     wynik={}
     for kol in df.select_dtypes("number").columns:
         q1=df[kol].quantile(0.25)
         q3=df[kol].quantile(0.75)
         iqr=q3-q1
-        za_male=df[kol]<q1-3*iqr
-        za_duze=df[kol]>q3+3*iqr
+        za_male=df[kol]<q1-k*iqr
+        za_duze=df[kol]>q3+k*iqr
         liczba=za_male.sum()+za_duze.sum()
         if liczba>0:
             wynik[kol]=int(liczba)
@@ -54,7 +54,7 @@ def raport(df):
     print(f"Braki:\n {braki(df)}\n")
     print(f"Duplikaty: {duplikaty(df)}\n")
     print(f"Ujemne: {ujemne(df)}\n")
-    print(f"Outlier-y: {outliery(df)}\n")
+    print(f"Outlier-y: {outliery(df,3)}\n")
     print(f"Niespójny zapis: {niespojny_zapis(df)}\n")
     print("Daty z przyszłości:",daty_z_przyszlosci(df))
 
