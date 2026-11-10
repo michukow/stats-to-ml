@@ -61,6 +61,9 @@ Jak oszacować odsetek wadliwych rekordów w dużym zbiorze bez sprawdzania wszy
 - symulacja trafności: przedział „95%” trafia w 94,5% przypadków przy n = 400, ale tylko w 77,5% przy n = 50, bo w małej próbie często nie ma ani jednej wady,
 - kalkulator wielkości próby (`Audyt/wielkosc_proby.py`): ±0,5 pp przy 4% wad wymaga 5901 rekordów.
 
+### Moduł B: audyt jakościowy
+**Wersja online:** [audytor-danych.streamlit.app](https://audytor-danych.streamlit.app/)
+
 ## Faza 4: Diagnostyka (w trakcie)
 - Autokorelacja i statystyka Durbina–Watsona (`autokorelacja.py`), model w różnicach.
 
