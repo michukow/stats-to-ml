@@ -5,12 +5,12 @@ from audytor import braki, duplikaty, ujemne, outliery, niespojny_zapis, daty_z_
 st.title("Audyt danych")
 st.write("Witaj w aplikacji do audytu danych! Wybierz plik CSV, aby rozpocząć analizę.")
 
-plik = st.file_uploader("Wgraj plik CSV",type="csv")
+plik=st.file_uploader("Wgraj plik CSV",type="csv")
 
 if plik is not None:
     df=pd.read_csv(plik)
-    k=st.slider("Próg outlierów", 1.5, 5.0, 3.0)
-    st.write("Aktualne k:", k)
+    k=st.slider("Próg outlierów",1.5,5.0,3.0)
+    st.write("Aktualne k:",k)
 
     kol1,kol2, kol3=st.columns(3)
     kol1.metric("Wiersze",len(df))
