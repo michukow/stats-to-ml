@@ -28,6 +28,7 @@ plt.show()
 #PART 2
 wyniki_b1=np.zeros(N_SYM)
 wyniki_se=np.zeros(N_SYM)
+wyniki_se_odp=np.zeros(N_SYM)
 for i in range(N_SYM):
     y=1+2*x+szum(x)
     Xty=X.T@y
@@ -37,7 +38,9 @@ for i in range(N_SYM):
     s2=(e**2).sum()/(N_OBS-2)
     wyniki_b1[i]=b1
     wyniki_se[i]=np.sqrt(s2/SS_x)
+    wyniki_se_odp[i]=np.sqrt((x_odch**2*e**2).sum())/SS_x
 
 print(f"Średnia b1: {wyniki_b1.mean():.3f}")
 print(f"Prawdziwy rozrzut b1: {wyniki_b1.std():.3f}")
 print(f"Średnie SE ze wzoru: {wyniki_se.mean():.3f}")
+print(f"Błąd standardowy White'a: {wyniki_se_odp.mean():.3f}")
