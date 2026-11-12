@@ -36,3 +36,4 @@ if __name__ == "__main__":
     df.to_csv(PLIK,index=False)
     print(df.head())
     print(df.shape)
+    print(df.describe())
