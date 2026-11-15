@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+import matplotlib.pyplot as plt
 sys.path.append("../Audyt")
 from audytor import braki, duplikaty, ujemne, outliery, raport
 plik="dane/liczniki_krakow.csv"
@@ -23,3 +24,12 @@ df = df.rename(columns={
 
 df.to_csv("liczniki_czyste.csv", index=False)
 print(df.dtypes)
+
+for licznik in ["Bulwary", "Mogilska"]:
+    plt.plot(df[licznik].rolling(30).mean(), label=licznik)
+
+plt.title("Ruch rowerowy w Krakowie (średnia z 30 dni)")
+plt.ylabel("rowery na dobę")
+plt.legend()
+plt.savefig("ruch_w_czasie.png",dpi=150,bbox_inches="tight")
+plt.show()
