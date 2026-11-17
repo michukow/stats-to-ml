@@ -13,3 +13,8 @@ print("Korelacja temperatur:",df.loc[oba,["temp_srednia","om_temp"]].corr().iloc
 print("Różnica temp (ZTP - OM): ",(df.loc[oba, "temp_srednia"]-df.loc[oba, "om_temp"]).mean().round(2))
 print((df.loc[oba, "temp_srednia"]-df.loc[oba,"om_temp"]).describe().round(2))
 print("Korelacja opadów:",df.loc[oba, ["opad_suma","om_opady"]].corr().iloc[0,1].round(3))
+
+df["temp_srednia"]=df["temp_srednia"].fillna(df["om_temp"])
+df["opad_suma"]=df["opad_suma"].fillna(df["om_opady"])
+print("Braki po uzupełnieniu:", df[["temp_srednia","opad_suma"]].isna().sum().tolist())
+df.to_csv("rowery_pogoda.csv", index=False)
