@@ -1,15 +1,19 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from statsmodels.stats.diagnostic import het_white
 
 df=pd.read_csv("C:\\Users\\micha\\Desktop\\Python\\stats-to-ml\\rowery-kraków\\rowery_pogoda.csv",parse_dates=["data"])
 
-df["padalo"]=(df["opad_suma"]>0).astype(float)
+df=df[df["Bulwary"]>0] 
 dni=pd.get_dummies(df["data"].dt.day_of_week,prefix="dzien",drop_first=True,dtype=float)
-X=sm.add_constant(pd.concat([df[["temp_srednia","padalo"]],dni],axis=1))
-y=df["Bulwary"]
-model=sm.OLS(y,X).fit()
+X=sm.add_constant(pd.concat([df[["temp_srednia","opad_suma"]],dni],axis=1))
+y=np.log(df["Bulwary"])
+model=sm.OLS(y,X).fit(cov_type="HAC",cov_kwds={"maxlags":7})
+procenty=(np.exp(model.params)-1)*100
+print(procenty.round(1))
+print(f"R² = {model.rsquared:.3f}")
 
 #reszty
 plt.scatter(model.fittedvalues,model.resid,s=4,alpha=0.4)
