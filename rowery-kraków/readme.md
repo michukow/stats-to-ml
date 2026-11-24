@@ -1,94 +1,114 @@
 # Ruch rowerowy w Krakowie a pogoda
 
-Jak pogoda, pora roku i dzień tygodnia wpływają na liczbę rowerzystów w Krakowie? Czy trasy rekreacyjne reagują na pogodę inaczej niż trasy, którymi ludzie dojeżdżają do pracy?
+**Pytanie:** jak pogoda i dzień tygodnia wpływają na liczbę rowerzystów w Krakowie? Czy trasa rekreacyjna reaguje inaczej niż trasa, którą ludzie dojeżdżają do pracy?
 
-Projekt łączy prawie 10 lat dziennych pomiarów z automatycznych liczników rowerowych z danymi pogodowymi i analizuje je metodami ekonometrycznymi.
+**Odpowiedź w jednym zdaniu:** Bulwary to trasa „pogodowa”, Mogilska to trasa „kalendarzowa”. Na Bulwarach mocniej działają ciepło i deszcz, a na Mogilskiej w weekend ruch spada o połowę.
 
 ![Ruch rowerowy na Bulwarach i Mogilskiej](ruch_w_czasie.png)
+
+## Najważniejsze wyniki
+
+Model: `log(rowery) ~ temperatura + opady + dzień tygodnia`, błędy standardowe Neweya–Westa. Wyniki jako zmiana procentowa liczby rowerzystów.
+
+| Czynnik | Bulwary (rekreacja) | Mogilska (dojazdy) |
+|---|---|---|
+| temperatura, +1°C | **+12,4%** | +8,2% |
+| opady, +1 mm | **−4,8%** | −3,2% |
+| sobota (vs poniedziałek) | −13,8% | **−46,9%** |
+| niedziela (vs poniedziałek) | −1,7% | **−47,6%** |
+| wtorek–czwartek (vs poniedziałek) | +7 do +9% | +5 do +8% |
+
+Wnioski:
+- **Bulwary są bardziej wrażliwe na pogodę**: na każdy stopień ciepła przybywa o połowę więcej rowerzystów (w procentach) niż na Mogilskiej, a deszcz odstrasza ich mocniej.
+- **Mogilska żyje rytmem pracy**: w weekend ruch spada prawie o połowę. Na Bulwarach niedziela jest praktycznie taka jak dzień roboczy, bo ubytek dojeżdżających zastępują rekreacyjni.
+- **Bulwary nie są czysto rekreacyjne**: w środku tygodnia ruch jest tam o około 7% wyższy niż w poniedziałek, więc część osób jeździ nimi do pracy.
 
 ## Dane
 
 | Źródło | Zawartość | Okres |
 |---|---|---|
-| [ZTP Kraków – pomiary ruchu rowerowego](https://ztp.krakow.pl/rower/pomiary-ruchu-rowerowego/dane-tabelaryczne) | dzienna liczba rowerzystów z 20 liczników + pogoda (temperatury, opady) | 18.11.2016 – 31.10.2026 |
+| [ZTP Kraków – pomiary ruchu rowerowego](https://ztp.krakow.pl/rower/pomiary-ruchu-rowerowego/dane-tabelaryczne) | dzienna liczba rowerzystów z 20 liczników + pogoda | 18.11.2016 – 31.10.2026 |
 | [Open-Meteo Historical Weather API](https://open-meteo.com/) | dzienna temperatura średnia i suma opadów dla Krakowa | ten sam okres |
 
-Liczniki działają od różnych dat. Pełne 10 lat danych mają: **Bulwary, Mogilska, Kotlarska, Wadowicka, Wielicka**. Do analizy wybrałem:
-- **Bulwary**: trasa w dużej mierze rekreacyjna,
-- **Mogilska**: trasa w dużej mierze dojazdowa.
+Do analizy wybrałem dwa liczniki z pełnymi 10 latami danych: **Bulwary** (trasa w dużej mierze rekreacyjna) i **Mogilska** (trasa w dużej mierze dojazdowa).
 
-## Co zostało zrobione
+## Przebieg analizy
 
-### 1. Pobranie pogody (`pobierz_pogode.py`)
-Funkcja pobierająca dzienną pogodę dla dowolnego okresu z archiwum Open-Meteo (bez klucza API).
-
-### 2. Wczytanie i audyt jakości danych (`wczytaj_dane.py`)
-Dane przepuszczone przez mój [audytor jakości danych](../Audyt/). Znalezione problemy:
+### 1. Audyt jakości danych
+Dane przepuszczone przez mój [audytor jakości danych](https://audytor-danych.streamlit.app/).
 
 | Problem | Skąd się wziął | Co zrobiłem |
 |---|---|---|
 | kolumna `Dworzec Główny` wczytana jako tekst | **jedna spacja** w komórce z 22.11.2016 | zamiana na liczby, spacja → brak danych |
 | dużo braków w części liczników | liczniki uruchamiane w różnych latach (to nie błąd) | analiza tylko na licznikach z pełnym okresem |
-| 245 dni bez pogody w danych ZTP | luka od marca do października 2026 | uzupełnienie z Open-Meteo (krok 4) |
-| setki „outlierów” w opadach | reguła 3·IQR nie pasuje do zmiennej skośnej (ponad połowa dni bez deszczu) | to nie są błędy, reguły nie stosuję do opadów |
-| przecinki dziesiętne w kolumnach pogody | format pliku źródłowego | `read_csv(..., decimal=",")` |
+| 245 dni bez pogody | luka w danych ZTP od marca do października 2026 | uzupełnienie z Open-Meteo |
+| setki „outlierów” w opadach | reguła 3·IQR nie pasuje do zmiennej skośnej (ponad połowa dni bez deszczu) | to nie są błędy; reguły nie stosuję do opadów |
+| dni z zerową liczbą rowerów | najpewniej awarie licznika | usunięte przed logarytmowaniem |
 
-Najciekawsza lekcja: jedna niewidoczna spacja zamieniła całą kolumnę z ponad 3000 pomiarów w tekst, a audytor po cichu pominął ją przy sprawdzaniu liczb.
+### 2. Porównanie dwóch źródeł pogody
+Przez 9 lat pogoda jest dostępna i z ZTP, i z Open-Meteo, więc można sprawdzić, czy mówią to samo:
 
-### 3. Pierwszy wykres (`pierwszy_wykres.py`)
-30-dniowa średnia krocząca ruchu na Bulwarach i Mogilskiej. Wnioski:
-- **Silna sezonowość** na obu trasach.
-- **Bulwary są dużo bardziej „pogodowe”**: latem około 15 razy więcej rowerów niż zimą. Na Mogilskiej około 6 razy, bo część osób jeździ do pracy przez cały rok.
-- **Wiosna 2020**: wyraźny spadek w czasie lockdownu, a zaraz potem jedno z najwyższych lat.
-
-### 4. Połączenie z Open-Meteo (`polacz_dane.py`)
-Przez 9 lat pogoda jest dostępna z obu źródeł naraz, więc można sprawdzić, czy mówią to samo:
-
-| Wielkość | Korelacja ZTP – Open-Meteo | Uwagi |
+| Wielkość | Korelacja | Uwagi |
 |---|---|---|
-| temperatura średnia | **0,995** | ZTP średnio o 0,25°C chłodniejsze |
-| suma opadów | **0,63** | deszcz jest lokalny; stacja i siatka modelu to różne miejsca |
+| temperatura | **0,995** | ZTP średnio o 0,25°C chłodniejsze |
+| opady | **0,63** | deszcz jest lokalny; stacja i siatka modelu to różne miejsca |
 
-Wniosek: temperaturę można bez obaw uzupełniać z Open-Meteo. Opady są mniej pewne, dlatego w regresji rozważam zmienną „padało / nie padało” zamiast milimetrów.
+Temperaturę można bezpiecznie uzupełniać z Open-Meteo. Opady za 2026 są mniej pewne.
 
-Wynik: `dane/rowery_pogoda.csv`, czyli komplet danych bez braków w pogodzie.
+### 3. Pierwszy model: liniowy
+`rowery ~ temperatura + padało (0/1) + dzień tygodnia` dla Bulwarów: R² = 0,71, +122 rowery na 1°C, −682 rowery w deszczowy dzień.
 
-## Plan
+### 4. Diagnostyka
+![Reszty modelu liniowego](reszty_bulwary.png)
 
-- [x] pobranie pogody z Open-Meteo
-- [x] wczytanie i audyt jakości danych z liczników
-- [x] pierwszy wykres: sezonowość
-- [x] połączenie źródeł i uzupełnienie brakującej pogody
-- [ ] regresja: ruch ~ temperatura + deszcz + dzień tygodnia
-- [ ] diagnostyka: autokorelacja, heteroskedastyczność, odporne błędy standardowe
-- [ ] porównanie: Bulwary (rekreacja) vs Mogilska (dojazdy). Kto bardziej przejmuje się deszczem?
-- [ ] hipoteza: czy remonty w 2026 przesunęły ruch na sąsiednie liczniki?
+| Test | Wynik | Wniosek |
+|---|---|---|
+| Durbin–Watson | 1,36 | dodatnia autokorelacja: dzisiejszy ruch przypomina wczorajszy |
+| test White'a | LM = 412,7, p ≈ 10⁻⁷⁴ | silna heteroskedastyczność: latem wahania o tysiące, zimą o setki |
+| wykres reszt | lejek + ukośna linia | model liniowy przewiduje **ujemny** ruch w mroźne dni |
+
+Poprawki:
+- **błędy standardowe Neweya–Westa** (odporne na oba problemy naraz): SE temperatury wzrosło o 63%, ale wszystkie główne wnioski pozostały istotne,
+- **model logarytmiczny**: prognozy nie mogą być ujemne, a współczynniki czyta się jako procenty, co pozwala uczciwie porównać trasy o różnej skali ruchu.
+
+### 5. Ciekawostka: dwa modele, dwie „niedziele”
+Model liniowy mówi, że w niedzielę na Bulwarach jest **o 416 rowerów więcej** niż w poniedziałek, a logarytmiczny, że **o 1,7% mniej**. Oba mają rację. Latem niedziela to tłum, więc w sztukach różnica jest duża. Zimą w niedzielę mało kto jedzie rekreacyjnie i ruch jest niższy niż w dzień roboczy. Model liniowy jest zdominowany przez duże letnie liczby, a logarytmiczny traktuje wszystkie pory roku równo. Wniosek: **efekt niedzieli zależy od pory roku** (interakcja), co jest dobrym kierunkiem rozszerzenia.
 
 ## Ograniczenia
-- Opady za marzec–październik 2026 pochodzą z modelu Open-Meteo, a nie ze stacji ZTP, i są mniej dokładne.
-- Liczniki mogą mieć awarie (dni z zerami); jeszcze nieobsłużone.
+- Opady za marzec–październik 2026 pochodzą z modelu Open-Meteo, a nie ze stacji, i są mniej dokładne.
+- Model nie uwzględnia wakacji, świąt ani wydarzeń (np. pandemii w 2020).
+- Efekt dnia tygodnia jest taki sam przez cały rok; w rzeczywistości zależy od pory roku (patrz punkt 5).
+- Wyniki opisują związki w danych, a nie dowodzą przyczynowości.
+
+## Możliwe rozszerzenia
+- interakcja temperatury z weekendem (czy ciepła niedziela działa inaczej niż ciepły poniedziałek),
+- zmienne dla świąt i wakacji szkolnych,
+- pozostałe liczniki: mapa Krakowa z wrażliwością na pogodę dla każdego punktu.
 
 ## Struktura
 
 ```
-rowery_krakow/
+rowery-kraków/
 ├── dane/
 │   ├── liczniki_dzienne.csv     # surowe dane ZTP
 │   ├── liczniki_czyste.csv      # po audycie i naprawie
 │   └── rowery_pogoda.csv        # połączone z Open-Meteo
-├── pobierz_pogode.py
-├── wczytaj_dane.py
-├── pierwszy_wykres.py
-├── polacz_dane.py
+├── pobierz_pogode.py            # pogoda z Open-Meteo
+├── wczytaj.py                   # wczytanie, audyt, naprawa
+├── polacz_dane.py               # porównanie źródeł, uzupełnienie pogody
+├── regresja.py                  # model liniowy
+├── diagnostyka_bulwary.py       # wykres reszt, White, Newey–West
+├── porownanie.py                # Bulwary vs Mogilska
 ├── ruch_w_czasie.png
+├── reszty_bulwary.png
 └── README.md
 ```
 
 ## Uruchomienie
 
 ```
-pip install pandas matplotlib requests
-python wczytaj_dane.py
+pip install pandas numpy matplotlib statsmodels requests
+python wczytaj.py
 python polacz_dane.py
-python pierwszy_wykres.py
+python porownanie.py
 ```
